@@ -14,3 +14,10 @@ REST_FRAMEWORK = {
         'flytrap.auth.account.token.auth.TokenAuthentication',
     ),
 ```
+
+## don't signup
+add to setting
+
+```
+SHOW_SIGNUP = False
+```
