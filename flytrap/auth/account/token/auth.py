@@ -9,14 +9,19 @@ from rest_framework.authentication import TokenAuthentication as TokenAuth, get_
 
 def get_authorization_url(request):
     auth = request.query_params.get('token', b'')
-    return 'Token {}'.format(auth).encode()
+    if auth:
+        return 'Token {}'.format(auth).encode()
+    return ''
 
 
 class TokenAuthentication(TokenAuth):
     def authenticate(self, request):
         url_auth = get_authorization_url(request).split()
         header_auth = get_authorization_header(request).split()
-        auth = url_auth if len(url_auth[-1]) > len(header_auth[-1]) else header_auth
+        if url_auth and header_auth:
+            auth = url_auth if len(url_auth[-1]) > len(header_auth[-1]) else header_auth
+        else:
+            auth = url_auth or header_auth
 
         if not auth or auth[0].lower() != self.keyword.lower().encode():
             return None

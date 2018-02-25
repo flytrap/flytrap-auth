@@ -5,7 +5,7 @@
 from django.conf.urls import url
 from django.conf import settings
 
-from flytrap.auth.account.common.views import SignupView
+from flytrap.auth.account.common.views import SignupView, UserInfo
 from .views import ChangePasswordView, TokenLoginView
 
 SHOW_SIGNUP = getattr(settings, 'SHOW_SIGNUP', True)
@@ -13,6 +13,7 @@ SHOW_SIGNUP = getattr(settings, 'SHOW_SIGNUP', True)
 urlpatterns = [
     url('^change-password/$', ChangePasswordView.as_view({'post': 'create'})),
     url('^login/$', TokenLoginView.as_view({'post': 'create'})),
+    url('^user_info/(?P<pk>\d+)/$', UserInfo.as_view({'get', 'retrieve'})),
 ]
 
 if SHOW_SIGNUP:
