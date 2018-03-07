@@ -13,7 +13,7 @@ SHOW_SIGNUP = getattr(settings, 'SHOW_SIGNUP', True)
 urlpatterns = [
     url('^change-password/$', ChangePasswordView.as_view({'post': 'create'})),
     url('^login/$', TokenLoginView.as_view({'post': 'create'})),
-    url('^user_info/(?P<pk>\d+)/$', UserInfo.as_view({'get', 'retrieve'})),
+    url('^user_info/(?P<pk>\d+)/$', UserInfo.as_view({'get': 'retrieve'})),
 ]
 
 if SHOW_SIGNUP:
