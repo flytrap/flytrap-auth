@@ -3,7 +3,9 @@
 #
 # Created by flytrap
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -35,6 +37,12 @@ class UserSignupSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True},
         }
+
+    def is_valid(self, raise_exception=False):
+        email = self.initial_data.get('email')
+        if User.objects.filter(Q(email=email) or Q(username=email)).exists():
+            raise ValidationError({'message': '用户已存在，请直接登录'})
+        return super(UserSignupSerializer, self).is_valid(raise_exception)
 
 
 class UserLoginSerializer(serializers.ModelSerializer):

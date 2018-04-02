@@ -26,7 +26,7 @@ class ChangePasswordView(ModelViewSet):
         if user.check_password(request.data['old_password']):
             user.set_password(request.data['new_password'])
             user.save()
-            return Response(UserSerializer(user).data)
+            return Response({'status': 'ok', 'results': UserSerializer(user).data})
         else:
             return Response({'status': 'error'})
 
@@ -38,9 +38,14 @@ class TokenLoginView(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        用户token方式登录
-         """
+        用户token方式登录,用户名或邮箱
+        """
         user = authenticate(username=request.data['username'], password=request.data['password'])
+        if not user:
+            username_field = User.USERNAME_FIELD
+            User.USERNAME_FIELD = 'email'
+            user = authenticate(email=request.data['username'], password=request.data['password'])
+            User.USERNAME_FIELD = username_field
         if user and user.is_active:
             token, created = Token.objects.get_or_create(user=user)
             return Response({'token': token.key, 'status': 'ok'})

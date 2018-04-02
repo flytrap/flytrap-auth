@@ -19,7 +19,9 @@ class SignupView(ModelViewSet):
         用户注册
         """
         request.data['password'] = hashers.make_password(request.data['password'])
-        return super(SignupView, self).create(request, *args, **kwargs)
+        response = super(SignupView, self).create(request, *args, **kwargs)
+        response.data = {'status': 'ok', 'results': response.data}
+        return response
 
 
 class UserInfo(ModelViewSet):
